@@ -1,15 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { ExperienceForm } from "@/components/experiences/ExperienceForm";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
 import { storage } from "@/lib/storage";
 import type { Experience, ExperienceInput } from "@/lib/types";
 
 export default function ExperienceDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { showToast } = useToast();
   const [experience, setExperience] = useState<Experience | null | undefined>(undefined);
 
   useEffect(() => {
@@ -19,6 +23,7 @@ export default function ExperienceDetailPage() {
   const handleSubmit = async (input: ExperienceInput) => {
     const updated = await storage.updateExperience(id, input);
     setExperience(updated);
+    showToast("경험이 저장되었습니다.");
   };
 
   const handleDelete = async () => {
@@ -41,6 +46,13 @@ export default function ExperienceDetailPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
+      <Link
+        href="/experiences"
+        className="mb-4 inline-flex items-center gap-1 text-sm text-fog transition-colors hover:text-ink"
+      >
+        <ArrowLeft size={14} />
+        목록으로 돌아가기
+      </Link>
       <div className="flex items-start justify-between gap-4">
         <h1 className="text-h1 text-ink">경험 수정</h1>
         <Button variant="ghost" onClick={handleDelete} className="text-warn hover:text-warn">
@@ -53,6 +65,7 @@ export default function ExperienceDetailPage() {
           submitLabel="저장"
           onSubmit={handleSubmit}
           onCancel={() => router.push("/experiences")}
+          listHref="/experiences"
         />
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { FormEvent } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { ChipInput } from "@/components/ui/ChipInput";
@@ -13,6 +14,8 @@ interface ExperienceFormProps {
   submitLabel?: string;
   onSubmit: (input: ExperienceInput) => Promise<void>;
   onCancel?: () => void;
+  /** 지정하면 저장/취소 버튼 옆에 목록으로 이동하는 링크를 함께 보여준다. */
+  listHref?: string;
 }
 
 const KEYWORD_SUGGESTIONS = [
@@ -65,6 +68,7 @@ export function ExperienceForm({
   submitLabel = "저장",
   onSubmit,
   onCancel,
+  listHref,
 }: ExperienceFormProps) {
   const [value, setValue] = useState<ExperienceInput>({ ...EMPTY, ...initialValue });
   const [submitting, setSubmitting] = useState(false);
@@ -206,6 +210,14 @@ export function ExperienceForm({
           <Button type="button" variant="secondary" onClick={onCancel}>
             취소
           </Button>
+        )}
+        {listHref && (
+          <Link
+            href={listHref}
+            className="inline-flex items-center justify-center gap-1.5 rounded-input px-4 py-2 text-sm font-medium text-fog transition-colors hover:text-ink"
+          >
+            목록
+          </Link>
         )}
       </div>
     </form>
