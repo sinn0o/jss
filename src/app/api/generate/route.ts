@@ -4,6 +4,10 @@ import { callGemini } from "@/lib/gemini/client";
 import { GenerateRequestSchema, GeminiResponseSchema, type GenerateApiResponse } from "@/lib/gemini/schema";
 
 export const runtime = "nodejs";
+// Vercel 서버리스 함수 기본 실행 제한(플랜에 따라 10~15초) 안에 문항 일괄 생성이
+// 끝나지 않을 수 있어 넉넉히 늘려둔다. Hobby 플랜은 60초가 상한이므로 그 이상 필요하면
+// 요금제를 확인할 것.
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   let json: unknown;
