@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { Nav } from "@/components/layout/Nav";
+import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -18,8 +19,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className={`${jetbrainsMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-paper text-ink">
-        <Nav />
-        <main className="flex-1">{children}</main>
+        <ToastProvider>
+          <Nav />
+          <main className="flex-1">{children}</main>
+        </ToastProvider>
       </body>
     </html>
   );
