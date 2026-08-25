@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@import "pretendard/dist/web/variable/pretendardvariable.css";
+
+@theme {
+  /* Design.md 1장 — 컬러 팔레트 */
+  --color-ink: #1a1b20;
+  --color-paper: #fafaf8;
+  --color-fog: #8a8d93;
+  --color-line: #e4e4e1;
+  --color-panel: #f0f0ee;
+  --color-seal: #2f3ea8;
+  --color-seal-light: #eef0fa;
+  --color-warn: #b3261e;
+  --color-warn-light: #fbeceb;
+
+  /* Design.md 2장 — 타이포그래피 */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, monospace;
+
+  --text-h1: 1.75rem;
+  --text-h1--line-height: 1.3;
+  --text-h1--font-weight: 600;
+  --text-h2: 1.375rem;
+  --text-h2--line-height: 1.35;
+  --text-h2--font-weight: 600;
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.4;
+  --text-h3--font-weight: 600;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.7;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.4;
+
+  /* Design.md 3장 — radius */
+  --radius-card: 6px;
+  --radius-input: 4px;
+
+  /* Design.md 4장 — 완료 스탬프 애니메이션 */
+  --animate-stamp: stamp-in 150ms ease-out;
+}
+
+@keyframes stamp-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+* {
+  border-color: var(--color-line);
+}
