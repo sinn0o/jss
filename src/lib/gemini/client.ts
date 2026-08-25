@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { GEMINI_RESPONSE_SCHEMA } from "./schema";
 
-const DEFAULT_MODEL = "gemini-2.5-flash";
+const DEFAULT_MODEL = "gemini-3.6-flash";
 
 export async function callGemini(prompt: string): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;

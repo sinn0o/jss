@@ -25,6 +25,19 @@ npm run dev
 
 키가 없어도 앱은 정상적으로 실행되며, "자소서 생성"을 누르는 시점에만 안내 에러가 표시됩니다.
 
+기본 모델은 `gemini-3.6-flash`이며, `GEMINI_MODEL` 환경변수로 덮어쓸 수 있습니다.
+
+## Vercel 배포
+
+이 프로젝트는 서버 상태를 갖지 않는 구조(데이터는 브라우저 `localStorage`, `/api/generate`는
+매 요청마다 독립적으로 Gemini를 호출)라 Vercel 서버리스 환경에 그대로 배포할 수 있습니다.
+
+1. GitHub 저장소를 Vercel에 연결합니다(Framework Preset: Next.js, 별도 설정 불필요).
+2. Vercel 프로젝트 설정 → Environment Variables에 `GEMINI_API_KEY`를 추가합니다(`GEMINI_MODEL`은 선택).
+3. `/api/generate` 라우트는 `runtime = "nodejs"`, `maxDuration = 60`으로 설정되어 있습니다.
+   문항을 한 번에 여러 개 생성하는 배치 모드는 시간이 걸릴 수 있으므로, Hobby 플랜(최대 60초)에서도
+   타임아웃이 발생하면 문항 수를 줄이거나 상위 플랜을 사용하세요.
+
 ## 현재 범위 (Phase 1)
 
 - 데이터 저장: 브라우저 `localStorage` (로그인 없는 단일 사용자 전제)
