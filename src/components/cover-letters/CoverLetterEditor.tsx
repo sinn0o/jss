@@ -12,6 +12,13 @@ import { AnswerResultCard, type AnswerResultQuestion } from "./AnswerResultCard"
 
 type EditorQuestion = AnswerResultQuestion;
 
+// 실제로는 Gemini 호출 한 번으로 키워드 추출과 답안 작성이 함께 처리되지만,
+// 사용자에게는 진행 단계처럼 보이도록 문구를 순차 전환한다.
+const LOADING_STEPS: { message: string; after: number }[] = [
+  { message: "키워드를 추출하는 중이에요...", after: 0 },
+  { message: "자소서를 작성하고 있어요...", after: 2500 },
+];
+
 function toStoredQuestion(q: EditorQuestion): CoverLetterInput["questions"][number] {
   return {
     id: q.id,
@@ -72,6 +79,8 @@ export function CoverLetterEditor({ initialCoverLetter, onSaved }: CoverLetterEd
   const [savedId, setSavedId] = useState<string | null>(initialCoverLetter?.id ?? null);
   const [generatingScope, setGeneratingScope] = useState<"all" | string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState<string>(LOADING_STEPS[0].message);
+  const loadingTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const buildInput = (): CoverLetterInput => ({
     companyName: jobInfo.companyName,
@@ -97,6 +106,13 @@ export function CoverLetterEditor({ initialCoverLetter, onSaved }: CoverLetterEd
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questions, jobInfo, selectedExperienceIds, savedId]);
+
+  // 언마운트 시 진행 중인 로딩 문구 전환 타이머 정리
+  useEffect(() => {
+    return () => {
+      loadingTimers.current.forEach(clearTimeout);
+    };
+  }, []);
 
   const handleQuestionsChange = (next: EditableQuestion[]) => {
     setQuestions((prev) =>
@@ -151,6 +167,12 @@ export function CoverLetterEditor({ initialCoverLetter, onSaved }: CoverLetterEd
     }
     setApiError(null);
     setGeneratingScope(mode === "full" ? "all" : targetQuestionId!);
+
+    // 실제 호출은 한 번이지만, 진행 단계처럼 로딩 문구를 순차적으로 전환한다.
+    loadingTimers.current.forEach(clearTimeout);
+    loadingTimers.current = LOADING_STEPS.map((step) =>
+      setTimeout(() => setLoadingMessage(step.message), step.after),
+    );
 
     try {
       const selected = experiences.filter((e) => selectedExperienceIds.includes(e.id));
@@ -216,6 +238,9 @@ export function CoverLetterEditor({ initialCoverLetter, onSaved }: CoverLetterEd
     } catch {
       setApiError("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
     } finally {
+      loadingTimers.current.forEach(clearTimeout);
+      loadingTimers.current = [];
+      setLoadingMessage(LOADING_STEPS[0].message);
       setGeneratingScope(null);
     }
   };
@@ -256,6 +281,7 @@ export function CoverLetterEditor({ initialCoverLetter, onSaved }: CoverLetterEd
         <GenerateButton
           onClick={() => runGenerate("full")}
           loading={generatingScope !== null}
+          loadingMessage={loadingMessage}
           hasResult={hasAnyResult}
         />
       </div>
@@ -273,6 +299,7 @@ export function CoverLetterEditor({ initialCoverLetter, onSaved }: CoverLetterEd
               question={q}
               experiences={experiences}
               generating={generatingSet.has(q.id)}
+              generatingMessage={loadingMessage}
               onChangeAnswer={(text) => handleChangeAnswer(q.id, text)}
               onRegenerate={() => runGenerate("single", q.id)}
               regenerateDisabled={generatingScope !== null}

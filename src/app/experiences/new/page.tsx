@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -12,11 +13,13 @@ export default function NewExperiencePage() {
   const router = useRouter();
   const { create } = useExperiences();
   const { showToast } = useToast();
+  // 저장 후 폼을 빈 값으로 초기화하기 위해 key를 바꿔 ExperienceForm을 강제 리마운트한다.
+  const [formKey, setFormKey] = useState(0);
 
   const handleSubmit = async (input: ExperienceInput) => {
-    const created = await create(input);
-    showToast("경험이 등록되었습니다.");
-    router.push(`/experiences/${created.id}`);
+    await create(input);
+    showToast("경험이 등록되었습니다. 이어서 새 경험을 등록할 수 있어요.");
+    setFormKey((k) => k + 1);
   };
 
   return (
@@ -34,6 +37,7 @@ export default function NewExperiencePage() {
       </p>
       <div className="mt-8">
         <ExperienceForm
+          key={formKey}
           submitLabel="등록"
           onSubmit={handleSubmit}
           onCancel={() => router.back()}
