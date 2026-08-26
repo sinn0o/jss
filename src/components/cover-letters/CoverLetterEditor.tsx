@@ -263,6 +263,7 @@ export function CoverLetterEditor({ initialCoverLetter, onSaved }: CoverLetterEd
           experiences={experiences}
           selectedIds={selectedExperienceIds}
           onToggle={toggleExperience}
+          onSelectAll={setSelectedExperienceIds}
         />
 
         {extractedKeywords.length > 0 && (
