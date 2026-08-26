@@ -27,7 +27,7 @@ export function ExperienceSelector({
             <button
               type="button"
               onClick={() => onSelectAll(allSelected ? [] : experiences.map((e) => e.id))}
-              className="font-mono text-label text-seal hover:underline"
+              className="rounded-input bg-seal px-2.5 py-1 text-xs font-medium text-white transition-colors hover:bg-[#26327f]"
             >
               {allSelected ? "전체 해제" : "전체 선택"}
             </button>
