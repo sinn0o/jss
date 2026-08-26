@@ -24,6 +24,7 @@ interface AnswerResultCardProps {
   question: AnswerResultQuestion;
   experiences: Experience[];
   generating: boolean;
+  generatingMessage?: string;
   onChangeAnswer: (text: string) => void;
   onRegenerate: () => void;
   regenerateDisabled?: boolean;
@@ -34,6 +35,7 @@ export function AnswerResultCard({
   question,
   experiences,
   generating,
+  generatingMessage,
   onChangeAnswer,
   onRegenerate,
   regenerateDisabled,
@@ -76,7 +78,7 @@ export function AnswerResultCard({
         {generating ? (
           <div className="flex h-32 flex-col items-center justify-center gap-2 rounded-input border border-line text-sm text-fog">
             <span className="font-mono text-label">GENERATING...</span>
-            <span>AI가 답안을 작성하고 있습니다 (5~15초 소요)</span>
+            <span>{generatingMessage || "AI가 답안을 작성하고 있습니다 (5~15초 소요)"}</span>
           </div>
         ) : hasResult ? (
           <Textarea
