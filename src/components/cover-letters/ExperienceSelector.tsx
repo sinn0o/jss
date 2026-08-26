@@ -7,14 +7,33 @@ interface ExperienceSelectorProps {
   experiences: Experience[];
   selectedIds: string[];
   onToggle: (id: string) => void;
+  onSelectAll: (ids: string[]) => void;
 }
 
-export function ExperienceSelector({ experiences, selectedIds, onToggle }: ExperienceSelectorProps) {
+export function ExperienceSelector({
+  experiences,
+  selectedIds,
+  onToggle,
+  onSelectAll,
+}: ExperienceSelectorProps) {
+  const allSelected = experiences.length > 0 && selectedIds.length === experiences.length;
+
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="text-h3 text-ink">경험 선택</h2>
-        <span className="font-mono text-label text-fog">{selectedIds.length}개 선택됨</span>
+        <div className="flex items-center gap-2">
+          {experiences.length > 0 && (
+            <button
+              type="button"
+              onClick={() => onSelectAll(allSelected ? [] : experiences.map((e) => e.id))}
+              className="font-mono text-label text-seal hover:underline"
+            >
+              {allSelected ? "전체 해제" : "전체 선택"}
+            </button>
+          )}
+          <span className="font-mono text-label text-fog">{selectedIds.length}개 선택됨</span>
+        </div>
       </div>
 
       {experiences.length === 0 ? (
